@@ -38,22 +38,22 @@ void bin_to_hex(char *to, const unsigned char *p, size_t len) {
   *to = '\0';
 }
 
-static uint8_t mgos_mel_ac_packet_crc(uint8_t *data, uint8_t size) {
+static uint8_t mgos_vedirect_packet_crc(uint8_t *data, uint8_t size) {
   uint8_t crc = 0;
   for (int i = 0; i < size; i++) crc += data[i];
   return (0xFC - crc);
 }
 
-void mgos_mel_ac_packet_read() {
+void mgos_vedirect_packet_read() {
   // Handle packet read timeout
   int64_t now = mgos_uptime_micros();
   
-  size_t rx_count = mgos_uart_read_avail(mel->uart_no);
+  size_t rx_count = mgos_uart_read_avail(ved->uart_no);
 
   uint8_t data;
 
   while (rx_count) {
-    size_t n = mgos_uart_read(mel->uart_no, &data, 1);
+    size_t n = mgos_uart_read(ved->uart_no, &data, 1);
     if (n != 1)  // read error?
       return;
     fHandler.rxData(data);
@@ -61,10 +61,10 @@ void mgos_mel_ac_packet_read() {
   }
 }
 
-static void mgos_mel_ac_uart_dispatcher(int uart_no, void *arg) {
+static void mgos_vedirect_uart_dispatcher(int uart_no, void *arg) {
   assert(uart_no == ved->uart_no);
   if (mgos_uart_read_avail(uart_no) == 0) return;
-  mgos_mel_ac_packet_read();
+  mgos_vedirect_packet_read();
 }
 
 void mgos_vedirect_create() {
@@ -87,7 +87,7 @@ void mgos_vedirect_create() {
   ucfg.rx_buf_size = 256;
   ucfg.tx_buf_size = 32;
   if (!mgos_uart_configure(ved->uart_no, &ucfg)) goto err;
-  mgos_uart_set_dispatcher(ved->uart_no, mgos_mel_ac_uart_dispatcher,
+  mgos_uart_set_dispatcher(ved->uart_no, mgos_vedirect_uart_dispatcher,
                            (void *) ved);
   mgos_uart_set_rx_enabled(ved->uart_no, true);
 

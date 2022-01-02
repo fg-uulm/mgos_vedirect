@@ -13,6 +13,10 @@ sources:
 includes:
   - include
 
+cxxflags:
+  - "-Wno-error"
+  - "-Wno-reorder"
+
 config_schema:
   - ["vedirect", "o", {title: "VE.direct settings"}]
   - ["vedirect.enable", "b", true, {title: "Enable VE.direct reception and parsing"}]
