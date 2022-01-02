@@ -147,7 +147,7 @@ static void get_params_handler(struct mg_rpc_request_info *ri, void *cb_arg,
   (void) fi;
 }
 
-bool mgos_vedirect_init(void) {
+bool mgos_mgos_vedirect_init(void) {
   if (mgos_sys_config_get_vedirect_enable()) {
     mgos_vedirect_create();
 
@@ -159,6 +159,6 @@ bool mgos_vedirect_init(void) {
   return true;
 }
 
-void mgos_vedirect_deinit(void) {
+void mgos_mgos_vedirect_deinit(void) {
   mgos_vedirect_destroy();
 }
