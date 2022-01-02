@@ -70,7 +70,7 @@ static void mgos_vedirect_uart_dispatcher(int uart_no, void *arg) {
 void mgos_vedirect_create() {
   LOG(LL_DEBUG, ("Creating VE.Direct object..."));
   struct mgos_uart_config ucfg;
-  ved = calloc(1, sizeof(struct mgos_vedirect));
+  ved = (mgos_vedirect*)calloc(1, sizeof(struct mgos_vedirect));
   if (!ved) return;
   
   // Init all the structure members
