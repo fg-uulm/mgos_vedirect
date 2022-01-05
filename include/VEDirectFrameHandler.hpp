@@ -25,6 +25,7 @@ public:
 
     int frameIndex;                             // which line of the frame are we on
     int veEnd;                                  // current size (end) of the public buffer
+    bool checksumDisabled;
 
 private:
     //bool mStop;                               // not sure what Victron uses this for, not using

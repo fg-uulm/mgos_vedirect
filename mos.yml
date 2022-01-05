@@ -23,7 +23,10 @@ config_schema:
   - ["vedirect.enable", "b", true, {title: "Enable VE.direct reception and parsing"}]
   - ["vedirect.uart_no", "i", 1, {title: "UART number"}]
   - ["vedirect.uart_baud_rate", "i", 19200, {title: "UART baud rate"}]
+  - ["vedirect.rx_gpio", "i", 32, {title: "RX GPIO pin"}]
+  - ["vedirect.tx_gpio", "i", 33, {title: "TX GPIO pin (not used but has to be assigned)"}]
   - ["vedirect.rpc_enable", "b", true, {title: "Enable VE.direct rpc handlers"}]
+  - ["vedirect.checksum_disabled", "b", true, {title: "Disable VE.direct checksums for debug/testing"}]
 
 libs:
   - location: https://github.com/mongoose-os-libs/rpc-common

@@ -62,6 +62,7 @@ void mgos_vedirect_packet_read() {
 }
 
 void mgos_vedirect_print() {
+  LOG(LL_INFO, ("Current VE state"));
   for ( int i = 0; i < fHandler.veEnd; i++ ) {
     LOG(LL_INFO, (fHandler.veName[i]));
     LOG(LL_INFO, ("= "));
@@ -74,8 +75,9 @@ char* mgos_vedirect_read() {
   struct json_out jsout = JSON_OUT_BUF(state, sizeof(state));  
   json_printf(&jsout, "{");
   for ( int i = 0; i < fHandler.veEnd; i++ ) {
-    json_printf(&jsout, "%Q: %Q",fHandler.veName[i], fHandler.veValue[i]);  
+    json_printf(&jsout, "%Q: %Q,",fHandler.veName[i], fHandler.veValue[i]);  
   }
+  json_printf(&jsout, "}");
   return state;
 }
 
@@ -91,6 +93,8 @@ void mgos_vedirect_create() {
   ved = (mgos_vedirect*)calloc(1, sizeof(struct mgos_vedirect));
   if (!ved) return;
   
+  fHandler.checksumDisabled = mgos_sys_config_get_vedirect_checksum_disabled();
+
   // Init all the structure members
   memset((void *) ved, 0, sizeof(struct mgos_vedirect));
 
@@ -100,10 +104,14 @@ void mgos_vedirect_create() {
   mgos_uart_config_set_defaults(ved->uart_no, &ucfg);
   ucfg.baud_rate = mgos_sys_config_get_vedirect_uart_baud_rate();
   ucfg.num_data_bits = 8;
-  ucfg.parity = MGOS_UART_PARITY_EVEN;
+  ucfg.parity = MGOS_UART_PARITY_NONE;
   ucfg.stop_bits = MGOS_UART_STOP_BITS_1;
   ucfg.rx_buf_size = 256;
   ucfg.tx_buf_size = 32;
+  ucfg.dev.rx_gpio = mgos_sys_config_get_vedirect_rx_gpio();
+  ucfg.dev.tx_gpio = mgos_sys_config_get_vedirect_tx_gpio();
+
+  
   if (!mgos_uart_configure(ved->uart_no, &ucfg)) goto err;
   mgos_uart_set_dispatcher(ved->uart_no, mgos_vedirect_uart_dispatcher,
                            (void *) ved);

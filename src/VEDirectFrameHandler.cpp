@@ -51,6 +51,7 @@ VeDirectFrameHandler::VeDirectFrameHandler() :
 	veValue(),
 	veEnd(0)
 {
+	checksumDisabled = false;
 }
 
 /*
@@ -135,7 +136,7 @@ void VeDirectFrameHandler::rxData(uint8_t inbyte)
 			logE(MODULE,"[CHECKSUM] Invalid frame");
 		mChecksum = 0;
 		mState = IDLE;
-		frameEndEvent(valid);
+		frameEndEvent(valid || checksumDisabled);
 		break;
 	}
 	case RECORD_HEX:
