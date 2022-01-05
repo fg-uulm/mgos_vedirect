@@ -2,6 +2,7 @@ author: d4rkmen <darkmen@i.ua>
 description: Library that implements Mitsubishi Electric AC and ATW unit communication by UART
 type: lib
 version: 1.1
+name: vedirect
 
 tags:
   - c
