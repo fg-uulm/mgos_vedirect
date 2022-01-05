@@ -17,7 +17,6 @@ let VE = {
 
       read: function() {
         let rd = VE._read();
-        Log.info(rd)
         return JSON.parse(rd);
       }
     }
