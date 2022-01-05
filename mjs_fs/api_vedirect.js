@@ -4,9 +4,9 @@ let VE = {
     _print: ffi('void mgos_vedirect_print()'),
     _destroy: ffi('void mgos_vedirect_destroy()'),
 
-    create: function(i2cAddress) {
+    create: function() {
         let obj = Object.create(VE._proto);
-        obj.ve = VE._create(i2cAddress);
+        obj.ve = VE._create();
         return obj;
     },
 
