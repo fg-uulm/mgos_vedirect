@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mgos.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stddef.h>
