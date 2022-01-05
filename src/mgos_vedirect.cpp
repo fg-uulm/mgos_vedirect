@@ -61,6 +61,24 @@ void mgos_vedirect_packet_read() {
   }
 }
 
+void mgos_vedirect_print() {
+  for ( int i = 0; i < fHandler.veEnd; i++ ) {
+    LOG(LL_INFO, (fHandler.veName[i]));
+    LOG(LL_INFO, ("= "));
+    LOG(LL_INFO, (fHandler.veValue[i]));    
+  }
+}
+
+char* mgos_vedirect_read() {
+  static char state[256];
+  struct json_out jsout = JSON_OUT_BUF(state, sizeof(state));  
+  json_printf(&jsout, "{");
+  for ( int i = 0; i < fHandler.veEnd; i++ ) {
+    json_printf(&jsout, "%Q: %Q",fHandler.veName[i], fHandler.veValue[i]);  
+  }
+  return state;
+}
+
 static void mgos_vedirect_uart_dispatcher(int uart_no, void *arg) {
   assert(uart_no == ved->uart_no);
   if (mgos_uart_read_avail(uart_no) == 0) return;
@@ -109,56 +127,4 @@ void mgos_vedirect_destroy() {
   LOG(LL_DEBUG, ("Destroing Ve.Direct object...."));
   mgos_uart_set_rx_enabled(ved->uart_no, false);
   return;
-}
-
-void mgos_vedirect_get_params(struct mgos_mel_ac_params *params) {
-  // if (!mel || !params) return;
-  // *params = mel->params;
-}
-
-// RPC handlers
-static void get_params_handler(struct mg_rpc_request_info *ri, void *cb_arg,
-                               struct mg_rpc_frame_info *fi,
-                               struct mg_str args) {
-  // struct mbuf fb;
-  // struct json_out out = JSON_OUT_MBUF(&fb);
-
-  // mbuf_init(&fb, MGOS_MEL_AC_JSON_SIZE);
-
-  // struct mgos_mel_ac_params params;
-  // bool connected = mgos_mel_ac_get_connected();
-  // bool operating = mgos_mel_ac_get_operating();
-  // float room = mgos_mel_ac_get_room_temperature();
-  // mgos_vedirect_get_params(&params);
-
-  // // json_printf(
-  // //     &out,
-  // //     "{connected: %B, power: %d, mode: %d, setpoint: %.1f, fan: %d, "
-  // //     "vane_vert: %d, vane_horiz: %d, isee: %B, operating: %B, room: %.1f}",
-  // //     connected, params.power, params.mode, params.setpoint, params.fan,
-  // //     params.vane_vert, params.vane_horiz, params.isee, operating, room);
-
-  // mg_rpc_send_responsef(ri, "%.*s", fb.len, fb.buf);
-  // ri = NULL;
-
-  // mbuf_free(&fb);
-
-  (void) cb_arg;
-  (void) fi;
-}
-
-bool mgos_vedirect_init(void) {
-  if (mgos_sys_config_get_vedirect_enable()) {
-    mgos_vedirect_create();
-
-    if (mgos_sys_config_get_vedirect_rpc_enable()) {
-      struct mg_rpc *c = mgos_rpc_get_global();
-      mg_rpc_add_handler(c, "VeDirect.GetParams", "{}", get_params_handler, NULL);     
-    }
-  }
-  return true;
-}
-
-void mgos_vedirect_deinit(void) {
-  mgos_vedirect_destroy();
 }

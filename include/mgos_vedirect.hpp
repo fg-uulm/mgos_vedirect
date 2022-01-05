@@ -20,6 +20,8 @@ VeDirectFrameHandler fHandler;
 
 void mgos_vedirect_create();
 void mgos_vedirect_destroy();
+char* mgos_vedirect_read();
+void mgos_vedirect_print();
 
 #ifdef __cplusplus
 }
