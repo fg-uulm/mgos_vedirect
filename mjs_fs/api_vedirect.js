@@ -18,6 +18,6 @@ let VE = {
       read: function() {
         let rd = VE._read();
         return JSON.parse(rd);
-      }
+      },
     }
 };

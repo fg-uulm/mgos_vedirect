@@ -25,6 +25,7 @@
 #include "mgos_uart.h"
 
 static struct mgos_vedirect *ved = NULL;
+static struct mgos_vedirect_cb *cb = NULL;
 static constexpr char checksumTagName[] = "CHECKSUM";
 
 void bin_to_hex(char *to, const unsigned char *p, size_t len) {
@@ -56,6 +57,7 @@ void mgos_vedirect_packet_read() {
     size_t n = mgos_uart_read(ved->uart_no, &data, 1);
     if (n != 1)  // read error?
       return;
+    int prevFIndex = fHandler.frameIndex;
     fHandler.rxData(data);
     rx_count--;
   }

@@ -32,6 +32,9 @@
  * 
  */
  
+#include "time.h"
+#include "mgos.h"
+#include "mgos_time.h"
 #include "VEDirectFrameHandler.hpp"
 
 #define MODULE "VE.Frame"	// Victron seems to use this to find out where logging messages were generated
@@ -136,6 +139,20 @@ void VeDirectFrameHandler::rxData(uint8_t inbyte)
 			logE(MODULE,"[CHECKSUM] Invalid frame");
 		mChecksum = 0;
 		mState = IDLE;
+
+		//local ts add
+		time_t now = time(0);
+		struct tm *timeinfo = localtime(&now);
+		char timeStr[40];
+		strftime(timeStr, 40, "%I:%M:%S%p", timeinfo);
+		textRxEvent("TS", timeStr);
+
+		//local uptime add
+		char uptimeStr[6];
+		sprintf(uptimeStr, "%.2lf", mgos_uptime());
+		textRxEvent("UT", uptimeStr);
+		printf(uptimeStr);
+
 		frameEndEvent(valid || checksumDisabled);
 		break;
 	}
@@ -168,6 +185,7 @@ void VeDirectFrameHandler::frameEndEvent(bool valid) {
 	if ( valid ) {
 		for ( int i = 0; i < frameIndex; i++ ) {				// read each name already in the temp buffer
 			bool nameExists = false;
+			if(tempName[i][0] == '\r') continue;
 			for ( int j = 0; j <= veEnd; j++ ) {				// compare to existing names in the public buffer
 				if ( strcmp(tempName[i], veName[j]) == 0 ) {	
 					strcpy(veValue[j], tempValue[i]);			// overwrite tempValue in the public buffer
@@ -184,7 +202,7 @@ void VeDirectFrameHandler::frameEndEvent(bool valid) {
 				}
 			}
 		}
-	}
+	}	
 	frameIndex = 0;	// reset frame
 }
 

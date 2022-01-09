@@ -16,6 +16,11 @@ struct mgos_vedirect {
   bool connected;
 };
 
+struct mgos_vedirect_cb {
+    void (*callback)(char*, void *);
+    void *ud;
+};
+
 VeDirectFrameHandler fHandler;
 
 void mgos_vedirect_create();
